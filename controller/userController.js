@@ -2,7 +2,10 @@ const asyncWrapper = require('../utills/asyncWrapper')
 const User = require('../model/users')
 
 const getAllUsers=asyncWrapper(async(req,res,next)=>{
-    const users=await User.find()
+    const filter={}
+    if(req.query.role) filter.role=req.query.role.toLowerCase();
+    if (req.query.name) filter.name = { $regex: req.query.name, $options: 'i' };
+    const users=await User.find(filter)
 console.log(users)
     res.status(200).json({
         success:true,
@@ -22,4 +25,25 @@ const createUser=asyncWrapper(async(req,res)=>{
     })
 })
 
-module.exports={getAllUsers,createUser}
+const getUserByRole=asyncWrapper(async(req,res)=>{
+    const {role}=req.query
+
+    const singleUser= await User.find({role})
+    console.log(singleUser)
+    res.status(200).json({
+        success:true,
+        user:singleUser
+    })
+})
+
+const getUserById= asyncWrapper(async(req,res)=>{
+    const {id}=req.params
+    const userById= await User.findById(id)
+    console.log(userById)
+    res.status(200).json({
+        success:true,
+        user:userById
+    })
+})
+
+module.exports={getAllUsers,createUser,getUserByRole,getUserById}
