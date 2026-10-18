@@ -5,12 +5,27 @@ const getAllUsers=asyncWrapper(async(req,res,next)=>{
     const filter={}
     if(req.query.role) filter.role=req.query.role.toLowerCase();
     if (req.query.name) filter.name = { $regex: req.query.name, $options: 'i' };
-    const users=await User.find(filter)
+    let users= User.find(filter)
+
+    if(req.query.sort){
+        const sortBy= (req.query.sort).split(",").join(" ")
+        users=users.sort(sortBy)
+    }else{
+        users=users.sort('-createdAt')
+    }
+
+      if(req.query.fields){
+        const selectBy= (req.query.fields).split(",").join(" ")
+        users=users.select(selectBy)
+    }
+
+    const finalUsers= await users
+
 console.log(users)
     res.status(200).json({
         success:true,
         count:users.length,
-        users
+        finalUsers
     })
     
 })
