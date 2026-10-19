@@ -2,12 +2,12 @@ const mongoose=require('mongoose')
 
 const connectDB =async()=>{
     try{
-        const conn=await mongoose.connect('mongodb://127.0.0.1:27017/new-backend')
+        const conn=await mongoose.connect(process.env.MONGO_URI)
 
         console.log(`MongoDB Connected: ${conn.connection.host}`)
            console.log(`MongoDB name: ${conn.connection.name}`)
     }catch(err){
-        console.log(`❌Error: ${err.message}`)
+        console.error(`❌Error: ${err.message}`)
         process.exit(1)
     }
 }
