@@ -24,7 +24,7 @@ const getAllUsers=asyncWrapper(async(req,res,next)=>{
 console.log(users)
     res.status(200).json({
         success:true,
-        count:users.length,
+        count:finalUsers.length,
         finalUsers
     })
     

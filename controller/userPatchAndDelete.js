@@ -16,11 +16,7 @@ const userDelete=asyncWrapper(async(req,res)=>{
     const {id}=req.params
     const deleteUser= await User.findByIdAndDelete(id)
     console.log(deleteUser)
-    res.status(204).json({
-        success:true,
-        message:"User deleted successfuly",
-        deleteUser
-    })
+    res.status(204).json({})
 })
 
 module.exports={userUpdate,userDelete}

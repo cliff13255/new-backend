@@ -33,11 +33,7 @@ const postDeleted=asyncWrapper(async(req,res)=>{
     console.log(deletedPost)
 
 
-    res.status(204).json({
-        success:true,
-        message:"Post deleted successfuly",
-        deletedPost
-    })
+    res.status(204).json({})
 })
 
 module.exports={postUpdated,postDeleted}

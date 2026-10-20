@@ -22,7 +22,7 @@ const validateCreatePost=(req,res,next)=>{
 
         console.log(errors)
 if(errors.length>0){
-    res.status(400).json({
+    return res.status(400).json({
     success:false,
     message:"Not validated",
     errors
@@ -31,7 +31,7 @@ if(errors.length>0){
 
 next()
 }
- const validateUpdatePost=(req,res,next)=>{
+const validateUpdatePost=(req,res,next)=>{
     const errors=[]
     const {category,status}=req.body
 
@@ -42,6 +42,15 @@ next()
      if(status && !STATUSES.includes(status.toLowerCase()) ){
             errors.push(`status must be one of:${STATUSES.join(', ')} `)
         }
+
+   if(errors.length>0){
+    return res.status(400).json({
+    success:false,
+    message:"Not updated",
+    errors
+})
+}
 next()
- }
+}
+
 module.exports={validateCreatePost,validateUpdatePost}

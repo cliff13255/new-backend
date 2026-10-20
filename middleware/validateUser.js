@@ -1,6 +1,9 @@
 const validator=require('validator')
 const mongoose=require('mongoose')
 const ROLES=["admin","student","teacher","parent"]
+const CATEGORIES= ["tech","news","sports","entertainment","education"]
+const STATUSES=["archived","draft","published"]
+
 
 const validateMongoId= (req,res,next)=>{
     const {id}=req.params
