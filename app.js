@@ -1,6 +1,7 @@
 const express= require('express')
 const errorHandler = require('./middleware/errorHandler')
 const userRoute=require('./router/userRoute')
+const postRoute = require('./router/postRoute')
 const app=express()
 
 app.use(express.json())
@@ -10,6 +11,8 @@ app.get('/',(req,res)=>{res.status(200).json({success:true,message:"New api work
 
 //routes
 app.use('/api/',userRoute)
+
+app.use('/api/post/',postRoute)
 
 //invalid routes
 app.use((req,res,next)=>{
