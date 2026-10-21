@@ -35,11 +35,21 @@ const validateUpdatePost=(req,res,next)=>{
     const errors=[]
     const {category,status}=req.body
 
-       if(category && !CATEGORIES.includes(category.toLowerCase()) ){
+    // if(typeof category!== "string" || typeof status !== "string"){
+    //     errors.push("category and status should be string values")
+    // }
+    if(typeof category == "string" && category.trim()===""){
+        errors.push("category cannot be empty")
+    }
+     if(typeof status == "string" && status.trim()===""){
+        errors.push("status cannot be empty")
+    }
+
+       if(typeof category==="string" && !CATEGORIES.includes(category.toLowerCase()) ){
             errors.push(`category must be one of:${CATEGORIES.join(', ')} `)
         }
     
-     if(status && !STATUSES.includes(status.toLowerCase()) ){
+     if(typeof status ==="string" && !STATUSES.includes(status.toLowerCase()) ){
             errors.push(`status must be one of:${STATUSES.join(', ')} `)
         }
 
