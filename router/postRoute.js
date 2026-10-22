@@ -5,8 +5,7 @@ const {validateMongoId } = require('../middleware/validateUser');
 const { validateCreatePost,validateUpdatePost } = require('../middleware/validatePost');
 
 
-console.log('typeof controller:', typeof postUpdated);
-console.log('controller contents:', postUpdated);
+
 
 const router=express.Router()
 

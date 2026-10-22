@@ -4,9 +4,6 @@ const { userUpdate,userDelete } = require('../controller/userPatchAndDelete');
 const {validateMongoId, validateCreateUser } = require('../middleware/validateUser');
 const findUser = require('../middleware/findUseMiddleware');
 
-console.log('typeof controller:', typeof validateCreateUser);
-console.log('controller contents:', validateCreateUser);
-
 const router=express.Router()
 
 router.get('/users',getAllUsers)
