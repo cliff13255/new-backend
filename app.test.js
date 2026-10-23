@@ -20,6 +20,7 @@ describe("Campus News API", () => {
 
     expect(response.status).toBe(400)
     expect(response.body.success).toBe(false)
-     expect(Array.isArray(response.body.errors)).toBe(true)
+    expect(Array.isArray(response.body.errors)).toBe(true)
+    
   })
 });
