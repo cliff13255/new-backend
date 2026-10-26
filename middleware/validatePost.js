@@ -35,9 +35,15 @@ const validateUpdatePost=(req,res,next)=>{
     const errors=[]
     const {category,status}=req.body
 
-    // if(typeof category!== "string" || typeof status !== "string"){
-    //     errors.push("category and status should be string values")
-    // }
+   if (
+    (category !== undefined && typeof category !== "string") ||
+    (status !== undefined && typeof status !== "string")
+) {
+    return res.status(400).json({
+        success: false,
+        message: "Category and status must be strings"
+    });
+}
     if(typeof category == "string" && category.trim()===""){
         errors.push("category cannot be empty")
     }

@@ -24,7 +24,13 @@ const validateCreateUser=(req,res,next)=>{
     
     if(!name) errors.push("Name is required...")
     if(!email) errors.push("Email is required...")
-    if(!role) errors.push("Role is required...")  
+    if(!role) errors.push("Role is required...") 
+  if (role !== undefined && typeof role !== "string") {
+    return res.status(400).json({
+        success: false,
+        message: "role must be strings"
+    });
+}
         
     if(email && !validator.isEmail(email) ) {
         errors.push("Invalid email formart")
