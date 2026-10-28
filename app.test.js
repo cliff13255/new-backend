@@ -1,18 +1,35 @@
 
-require("dotenv").config();
-
+require("dotenv").config({quiet:true});
+const os = require("os");
 const mongoose = require("mongoose");
 const request = require("supertest");
 const app = require("./app");
+const Post = require("./model/post"); 
+
+ // let consoleLogSpy;
 
 // beforeAll(async () => {
 //     await mongoose.connect(process.env.MONGO_URI_TEST);
 // });
+beforeAll(async () => {
+    //   consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+    try {
+       await mongoose.connect(process.env.MONGO_URI_TEST, {
+    serverSelectionTimeoutMS: 5000,
+    runtimeAdapters: { os }
+});
 
+        console.log("Connected DB:", mongoose.connection.name);
+    } catch (err) {
+        console.error("MongoDB connection failed:", err.message);
+        throw err;
+    }
+}, 10000);
 
-// afterAll(async () => {
-//     await mongoose.connection.close();
-// });
+afterAll(async () => {
+    await mongoose.connection.close();
+    //consoleLogSpy.mockRestore()
+});
 
 
 describe("Campus News API", () => {
@@ -87,7 +104,7 @@ test("should reject a invalid status as the post ", async () => {
 
 test("should reject a invalid mongoID as the post ", async () => {
     const response = await request(app)
-        .patch("/api/users/123")
+        .patch("/api/post/123")
         .send({name:"Clifford"});
 
     expect(response.status).toBe(400);
@@ -96,18 +113,40 @@ test("should reject a invalid mongoID as the post ", async () => {
 });
 
 
-// test("should return 404 when a post does not exist", async () => {
-//     const fakeId = "000000000000000000000001";
+test("should return 404 when a post does not exist", async () => {
+    const fakeId = "000000000000000000000001";
 
-//     const response = await request(app)
-//         .get(`/api/post/${fakeId}`);
+    const response = await request(app)
+        .get(`/api/post/${fakeId}`);
 
-//     expect(response.status).toBe(404);
-//     expect(response.body.success).toBe(false);
-// });
+    expect(response.status).toBe(404);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toContain("user not found")
+});
 
+test("a post creation retiurns all the required fields",async()=>{
+      const submittedPost = {
+    title: "My last Tech Post",
+    content: "This content is not definitely longer than twenty one characters, I promise.",
+    category: "news",
+    status: "draft",
+    author: "6ad206f809939b2436873f19",
+  };
+    const response= await request(app).post('/api/post/').send(submittedPost)
 
+  expect(response.status).toBe(201)
+  expect(response.body.success).toBe(true)
+  const requiredFields=["title","content","category","status","author"];
+  requiredFields.forEach(field=>
+    expect(response.body.post).toHaveProperty(field)
+  )
+  expect(response.body.post.title).toBe(submittedPost.title);
 
  
+  const savedPost = await Post.findById(response.body.post._id);
+  expect(savedPost).not.toBeNull();
+  expect(savedPost.title).toBe(submittedPost.title);
+})
+
 
 });
