@@ -1,5 +1,6 @@
 const mongoose=require('mongoose')
 const validator=require('validator')
+const argon2=require('argon2')
 const ROLES=["admin","student","teacher","parent"]
 
 const userSchema= new mongoose.Schema({
@@ -35,10 +36,31 @@ const userSchema= new mongoose.Schema({
             message:`Content must be one of these: ${ROLES.join(',')}`
         },
         default:"student"
+    },
+    password:{
+        type:String,
+        required:[true,"Password field is required"],
+        minLength:[8,"Password must exceed 8 characters"],
+        select:false
     }
 },
 {
     timestamps:true
+})
+
+userSchema.pre("save",async function(next){
+    if(!this.isModified("password")) return next();
+
+    this.password= await argon2.hash(this.password,{type:argon2.argon2id})
+    
+
+})
+
+userSchema.set('toJSON',{
+    transform:function(doc,ret){
+        delete ret.password;
+        return ret;
+    }
 })
 
 const User= mongoose.model('User',userSchema)

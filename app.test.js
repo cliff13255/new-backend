@@ -1,10 +1,12 @@
 
 require("dotenv").config({quiet:true});
 const os = require("os");
+const argon2=require('argon2')
 const mongoose = require("mongoose");
 const request = require("supertest");
 const app = require("./app");
 const Post = require("./model/post"); 
+const User=require('./model/users')
 
  // let consoleLogSpy;
 
@@ -147,6 +149,26 @@ test("a post creation retiurns all the required fields",async()=>{
   expect(savedPost).not.toBeNull();
   expect(savedPost.title).toBe(submittedPost.title);
 })
+ test("test if the  pasword hashing on user model works",async()=>{
+    const stringPassword="davy@2026"
+    const submittedUser={
+        name:"davy",
+        email:"davy@gmail.com",
+        role:"student",
+        password:stringPassword
+    }
+    const response=await request(app).post('/api/create/').send(submittedUser)
 
+    expect(response.status).toBe(201)
+    console.log(response.body);
+    expect(response.body.user.password).toBeUndefined();
+
+    const savedUser=await User.findOne({email:"davy@gmail.com"}).select("+password")
+    
+    expect(savedUser).toBeTruthy()
+    expect(savedUser.password).not.toBe(stringPassword)
+    const isMatch=await argon2.verify(savedUser.password,stringPassword)
+    expect(isMatch).toBe(true)
+ })
 
 });

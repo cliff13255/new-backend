@@ -31,12 +31,13 @@ console.log(users)
 })
 
 const createUser=asyncWrapper(async(req,res)=>{
-    const createUser=await User.create(req.body)
-    console.log(createUser)
+    const newUser=await User.create(req.body)
+ // newUser.password=undefined
+
 
     res.status(201).json({
         success:true,
-        createUser
+        user:newUser
     })
 })
 
